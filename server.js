@@ -1,12 +1,15 @@
 import express from 'express';
 import * as dotenv from 'dotenv';
 dotenv.config();
-import usersRouter from './routes/users.js';
+import { usersRouter, studentsRouter } from './routes/index.js';
+
 
 const app = express();
+app.use(express.json());
 const port = process.env.PORT ?? 3000;
 
-app.use('/gears', usersRouter);
+app.use('/users', usersRouter);
+app.use('/students', studentsRouter);
 
 app.get('/', (req, res) => {
   res.send('Hahahihi')
