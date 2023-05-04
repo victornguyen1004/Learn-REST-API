@@ -5,18 +5,15 @@ mongoose.set("strictQuery", true);
 async function connect() {
   try {
     let connection = await mongoose.connect(process.env.MONGO_URI);
-    debugger
     print("Connect mongoose successfully", OutputType.SUCCESS);
     return connection;
   } catch (error) {
     const { code } = error;
-    debugger;
     if (error.code == 8000) {
       throw new Exception(Exception.WRONG_DB_USERNAME_PASSWORD);
     } else if (code == "ENOTFOUND") {
         throw new Exception(Exception.WRONG_CONNECTION_STRING);
     }
-    debugger;
     throw new Exception(Exception.CANNOT_CONNECT_MONGODB);
   }
 }
