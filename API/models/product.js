@@ -1,4 +1,3 @@
-const { ObjectId, Decimal128 } = require('mongodb')
 const mongoose = require('mongoose')
 
 const productSchema = mongoose.Schema({
@@ -11,7 +10,7 @@ const productSchema = mongoose.Schema({
         required: true,
     },
     Price: {
-        type: Decimal128,
+        type: String,
         required: true,
     },
     Quantity: {

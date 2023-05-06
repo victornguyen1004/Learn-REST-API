@@ -10,6 +10,7 @@ const port = process.env.PORT || 3002
 
 app.use(express.json())
 app.use('/products', require("./routes/products.js"))
+app.use('/user', require("./routes/user.js"))
 app.use(errorHandler)
 app.listen(port,() => {
     console.log(`Server running on ${port}`)

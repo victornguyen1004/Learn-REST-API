@@ -1,6 +1,6 @@
 const asyncHandler = require('express-async-handler')
 const Product = require('../models/product.js')
-const product = require('../models/product.js')
+
 //@desc Get all products
 //@route Get /products
 
@@ -12,7 +12,7 @@ const getProducts = asyncHandler(async (req,res) =>{
 const createProduct = asyncHandler(async (req,res) =>{
     console.log('this is body',req.body)
     const {GearId,Name,Price,Quantity,Rating,Brand,Image} = req.body
-    if(!!GearId || !!Name || !!Price || !!Quantity || !!Rating || !!Brand || !!Image) {
+    if(!GearId || !Name || !Price || !Quantity || !Rating || !Brand || !Image) {
         res.status(400)
         throw new Error("All fields are mandatory")
     }
