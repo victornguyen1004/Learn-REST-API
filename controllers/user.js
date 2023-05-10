@@ -1,47 +1,64 @@
 import { body, validationResult } from "express-validator";
-import { studentRepository, userRepository } from "../repositories/index.js";
-import {EventEmitter} from 'node:events'
-const myEvent = new EventEmitter()
+import HttpStatusCode from "../exceptions/HttpStatusCode.js";
+import Exception from "../exceptions/Exception.js";
+import { userRepository } from "../repositories/index.js";
+import { EventEmitter } from "node:events";
+const myEvent = new EventEmitter();
 // Listen
-myEvent.on('event.register.user', (params) => {
-  console.log(`They talked about: ${JSON.stringify(params)}`)
-})
+myEvent.on("event.register.user", (params) => {
+  console.log(`They talked about: ${JSON.stringify(params)}`);
+});
 
 const login = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
+    return res
+      .status(HttpStatusCode.BAD_REQUEST)
+      .json({ errors: errors.array() });
   }
   const { email, password } = req.body;
 
   // Call repository
-  await userRepository.login({ email, password });
+  try {
+    let existingUser = await userRepository.login({ email, password });
 
-  res.status(200).json({
-    message: "Login user successfully",
-    // data: "details user here..."
-  });
+    res.status(HttpStatusCode.OK).json({
+      message: "Login user successfully",
+      data: existingUser
+    });
+  } catch (exception) {
+    res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({
+      message: exception.toString(),
+    });
+  }
 };
 
 const register = async (req, res) => {
-  // deconstructuring
-  const {
-    name, email, password, phoneNumber, address
-  } = req.body
-  await userRepository.register({
-    name,
-    email,
-    password,
-    phoneNumber,
-    address,
-  });
+  // destructuring
+  const { name, email, password, phoneNumber, address } = req.body;
 
   // EventEmitter
-  myEvent.emit('event.register.user', {email, address, phoneNumber})
+  myEvent.emit("event.register.user", { email, address, phoneNumber });
 
-  res.status(201).json({
-    message: "Register user successfully",
-  });
+  try {
+    debugger;
+    const user = await userRepository.register({
+      name,
+      email,
+      password,
+      phoneNumber,
+      address,
+    });
+    res.status(HttpStatusCode.INSERT_OK).json({
+      message: "Register user successfully",
+      data: user,
+    });
+  } catch (exception) {
+    debugger;
+    res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({
+      message: exception.toString(),
+    });
+  }
 };
 
 const getDetailUser = async (req, res) => {};

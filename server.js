@@ -2,9 +2,11 @@ import express from 'express';
 import * as dotenv from 'dotenv';
 dotenv.config();
 import { usersRouter, studentsRouter } from './routes/index.js';
-
+import connect from './database/database.js';
+import checkToken from './authentication/auth.js';
 
 const app = express();
+app.use(checkToken) // shield, guard
 app.use(express.json());
 const port = process.env.PORT ?? 3000;
 
@@ -14,10 +16,8 @@ app.use('/students', studentsRouter);
 app.get('/', (req, res) => {
   res.send('Hahahihi')
 })
-// Connect to MongoDB
-// mongoose.connect(
-//   "mongodb+srv://client:passla123@cluster0.ny901qx.mongodb.net/?retryWrites=true&w=majority"
-// )
+
 app.listen(port, async() => {
+  await connect()
   console.log(`listening on port ${port}`)
 });
