@@ -1,5 +1,4 @@
 import chalk from "chalk";
-import chart from "chalk";
 
 class OutputType {
   static INFORMATION = "INFORMATION";
